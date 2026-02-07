@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="th">
+<head> 
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>แบบทดสอบสุขภาพใจ - Healing Space</title>
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600&display=swap" rel="stylesheet">
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary-color: #5a7883;
+            --accent-color: #81c784;
+            --text-color: #333;
+        }
+
+        html, body {
+            font-family: 'Kanit', sans-serif;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            /* --- Background Image --- */
+            background-image: url('BhQ3.jpg'); 
+            background-repeat: no-repeat;
+            background-position: center center;
+            background-attachment: fixed;
+            background-size: cover;
+        }
+        #colorblind-filter-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        pointer-events: none; /* คลิกทะลุได้ */
+        z-index: 999999; /* สูงสุดเหนือทุกอย่าง */
+        display: none;
+        transition: all 0.3s ease;
+        }
+
+        /* --- Navbar โปร่งใส --- */
+        .custom-navbar {
+            background-color: transparent !important;
+            box-shadow: none !important;
+            padding-top: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .navbar-brand span {
+            color: #000000 !important;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+            font-weight: 600;
+            font-size: 1.4rem;
+        }
+        
+        .nav-link {
+            color: rgba(0, 0, 0, 0.9) !important;
+            font-weight: 400;
+            text-shadow: 0 1px 3px rgba(0,0,0,0.2);
+        }
+
+        .nav-link:hover {
+            color: #000000 !important;
+            transform: translateY(-2px);
+        }
+
+        /* --- Quiz Overlay Layout --- */
+        #quiz-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            /* Default: Center (สำหรับหน้าคำถามและผลลัพธ์) */
+            justify-content: center; 
+            padding: 20px;
+            z-index: 1;
+            transition: all 0.6s ease-in-out; /* เพิ่ม Effect ให้ขยับนุ่มๆ */
+        }
+
+        /* --- ✨ เพิ่มใหม่: จัดชิดซ้ายเฉพาะหน้า Intro (เฉพาะจอ Desktop) --- */
+        @media (min-width: 992px) {
+            #quiz-overlay.intro-mode {
+                justify-content: flex-start; /* จัดชิดซ้าย */
+                padding-left: 10%; /* เว้นระยะจากขอบซ้าย 10% */
+            }
+        }
+
+        .quiz-container {
+            width: 100%;
+            max-width: 600px;
+            /* Glassmorphism */
+            background: rgba(255, 255, 255, 0.90);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            padding: 40px;
+            border-radius: 25px;
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            text-align: center;
+            position: relative;
+            margin-top: 50px;
+        }
+
+        /* --- Buttons --- */
+        .quiz-title {
+            color: var(--primary-color);
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .quiz-subtitle {
+            color: #666;
+            margin-bottom: 2rem;
+            font-weight: 300;
+        }
+
+        .btn-quiz-primary {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(90, 120, 131, 0.3);
+            text-decoration: none !important;
+            display: inline-block;
+        }
+
+        .btn-quiz-primary:hover {
+            background-color: #4a636d;
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .btn-quiz-outline {
+            background-color: transparent;
+            color: #666;
+            border: 2px solid #ddd;
+            padding: 10px 25px;
+            border-radius: 50px;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+        .btn-quiz-outline:hover {
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+            background-color: #f8f9fa;
+        }
+
+        .quiz-option-btn {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 10px;
+            border: 2px solid #e0e0e0;
+            border-radius: 15px;
+            background: white;
+            color: var(--text-color);
+            transition: all 0.2s;
+            font-size: 1rem;
+        }
+
+        .quiz-option-btn:hover {
+            background-color: #f0f7f9;
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+        }
+
+        .progress-bar-custom {
+            height: 10px;
+            background-color: #e9ecef;
+            border-radius: 5px;
+            margin-bottom: 2rem;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background-color: var(--accent-color);
+            width: 0%;
+            transition: width 0.4s ease;
+        }
+        /* Knowledge Step Styles */
+        .knowledge-icon {
+            width: 50px;
+            height: 50px;
+            background: #e0f2f1;
+            color: var(--primary-color);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            margin: 0 auto 10px;
+        }
+        
+        .knowledge-box {
+            text-align: left;
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .fade-in { animation: fadeIn 0.5s ease-in; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Color Blind Filters */
+        body.mode-protanopia #colorblind-filter-overlay { display: block; filter: url('#protanopia'); backdrop-filter: url('#protanopia'); }
+        body.mode-deuteranopia #colorblind-filter-overlay { display: block; filter: url('#deuteranopia'); backdrop-filter: url('#deuteranopia'); }
+        body.mode-tritanopia #colorblind-filter-overlay { display: block; filter: url('#tritanopia'); backdrop-filter: url('#tritanopia'); }
+        body.mode-achromatopsia #colorblind-filter-overlay { display: block; filter: grayscale(100%); backdrop-filter: grayscale(100%); }   
+
+    </style>
+</head>
+
+<body style="background-image: url('BgQ1.jpg'); background-size: cover; background-repeat: no-repeat; background-position: center; background-attachment: fixed;">
+    <div id="colorblind-filter-overlay"></div>
+    <!-- Color Blind SVG Defs -->
+    <svg style="display: none;" version="1.1" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+        <filter id="protanopia">
+            <feColorMatrix type="matrix" values="0.567, 0.433, 0, 0, 0 0.558, 0.442, 0, 0, 0 0, 0.242, 0.758, 0, 0 0, 0, 0, 1, 0" />
+        </filter>
+        <filter id="deuteranopia">
+            <feColorMatrix type="matrix" values="0.625, 0.375, 0, 0, 0 0.7, 0.3, 0, 0, 0 0, 0.3, 0.7, 0, 0 0, 0, 0, 1, 0" />
+        </filter>
+        <filter id="tritanopia">
+            <feColorMatrix type="matrix" values="0.95, 0.05, 0, 0, 0 0, 0.433, 0.567, 0, 0 0, 0.475, 0.525, 0, 0 0, 0, 0, 1, 0" />
+        </filter>
+    </defs>
+    </svg>
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-md navbar-light fixed-top custom-navbar">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center" href="Home.html">
+                <img src="Logo.png" alt="Logo" height="80" class="mr-2"">
+                <span>Healing Space</span>
+            </a>
+            
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#myNavbar" style="border: none;">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <div class="collapse navbar-collapse" id="myNavbar">
+                <ul class="navbar-nav ml-auto align-items-center">
+                    <li class="nav-item"><a class="nav-link" href="Home.html">หน้าแรก</a></li>
+                    <li class="nav-item active"><a class="nav-link" href="quiz.html" style="font-weight: 500;">แบบทดสอบ</a></li>
+                    <li class="nav-item dropdown ml-2">
+                        <button class="btn btn-sm dropdown-toggle rounded-pill px-3" id="navbarDropdown" data-toggle="dropdown" 
+                            style="border: 1px solid #5a7883; color: #5a7883; background: rgba(255,255,255,0.8); backdrop-filter: blur(5px);">
+                            <i class="fas fa-eye mr-1"></i> โหมดการมองเห็น
+                        </button>
+                        <div class="dropdown-menu dropdown-menu-right border-0 shadow-lg p-2" style="border-radius: 12px;"> 
+                            <button class="dropdown-item rounded" onclick="setMode('normal')">ปกติ</button>
+                            <div class="dropdown-divider"></div>
+                            <button class="dropdown-item rounded" onclick="setMode('protanopia')">🔴 บอดสีแดง</button>
+                            <button class="dropdown-item rounded" onclick="setMode('deuteranopia')">🟢 บอดสีเขียว</button>
+                            <button class="dropdown-item rounded" onclick="setMode('tritanopia')">🔵 บอดสีน้ำเงิน</button>
+                            <button class="dropdown-item rounded" onclick="setMode('achromatopsia')">⚫ บอดทุกสี</button>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <!-- ✨ เพิ่ม class "intro-mode" เริ่มต้นที่นี่ -->
+    <div id="quiz-overlay" class="intro-mode">
+        <div class="quiz-container">
+            
+            <!-- Step 1: Intro -->
+            <div id="step-intro" class="fade-in">
+                <h1 class="quiz-title">เช็คสุขภาพใจของคุณ</h1>
+                <p class="quiz-subtitle">
+                    ให้เวลาตัวเองสักครู่...<br>
+                    ตอบคำถามตามความรู้สึกจริง เพื่อค้นหาว่า<br>
+                    <strong>"น้องแมวตัวไหน"</strong> คือเพื่อนคู่ใจของคุณในตอนนี้
+                </p>
+                <button class="btn-quiz-primary" onclick="goToKnowledge()">
+                    <i class="fas fa-play mr-2"></i>เริ่มทำแบบทดสอบ
+                </button>
+            </div>
+            <!-- ✨ Step 1.5: Knowledge (เพิ่มใหม่) -->
+            <div id="step-knowledge" class="fade-in text-left" style="display: none;">
+                <h3 class="font-weight-bold text-center mb-4" style="color: var(--primary-color);">ก่อนเริ่ม...มารู้จักสัญญาณเตือนกัน</h3>
+                
+                <div class="knowledge-box">
+                    <div class="d-flex align-items-start mb-3">
+                        <div class="mr-3 text-warning" style="font-size: 1.5rem;"><i class="fas fa-exclamation-circle"></i></div>
+                        <div>
+                            <h5 class="font-weight-bold mb-1">อาการหลัก (ต้องระวัง)</h5>
+                            <p class="small text-muted mb-0">เศร้า หดหู่ หรือเบื่อหน่าย ไม่อยากทำสิ่งที่เคยชอบ เป็นติดต่อกันนาน 2 สัปดาห์</p>
+                        </div>
+                    </div>
+                    <div class="d-flex align-items-start mb-3">
+                        <div class="mr-3 text-danger" style="font-size: 1.5rem;"><i class="fas fa-heart-broken"></i></div>
+                        <div>
+                            <h5 class="font-weight-bold mb-1">อาการร่วมอื่นๆ</h5>
+                            <ul class="small text-muted pl-3 mb-0">
+                                <li>นอนไม่หลับ หรือหลับมากเกินไป</li>
+                                <li>เหนื่อยง่าย ไม่มีแรง</li>
+                                <li>สมาธิสั้น ตัดสินใจลำบาก</li>
+                                <li>รู้สึกไร้ค่า หรือโทษตัวเอง</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <p class="text-center small text-muted mb-4">
+                    แบบทดสอบนี้เป็นเพียงเครื่องมือคัดกรองเบื้องต้น ไม่ใช่การวินิจฉัยทางการแพทย์
+                </p>
+
+                <div class="text-center">
+                    <button class="btn-quiz-primary px-4" onclick="proceedToQuiz()">
+                        <i class="fas fa-check mr-2"></i>เข้าใจแล้ว เริ่มทำแบบทดสอบ
+                    </button>
+                    <br>
+                    <button class="btn btn-link text-muted mt-2 btn-sm" onclick="backToIntro()">
+                        ย้อนกลับ
+                    </button>
+                </div>
+            </div>
+
+            <!-- Step 2: Questions -->
+            <div id="step-quiz" class="fade-in" style="display: none;">
+                <div class="progress-container">
+                    <div class="d-flex justify-content-between mb-2">
+                        <small class="text-muted font-weight-bold">ข้อที่ <span id="q-current">1</span> / <span id="q-total">9</span></small>
+                        <small class="text-muted">ความคืบหน้า</small>
+                    </div>
+                    <div class="progress-bar-custom">
+                        <div class="progress-fill" id="q-progress"></div>
+                    </div>
+                </div>
+
+                <h4 class="quiz-question-text my-4" id="q-text" style="font-weight: 500; line-height: 1.6;">กำลังโหลดคำถาม...</h4>
+
+                <div class="quiz-options-grid mx-auto">
+                    <button class="quiz-option-btn" onclick="answer(0)">ไม่เลย</button>
+                    <button class="quiz-option-btn" onclick="answer(1)">มีบางวันหรือไม่บ่อย</button>
+                    <button class="quiz-option-btn" onclick="answer(2)">มีค่อนข้างบ่อย</button>
+                    <button class="quiz-option-btn" onclick="answer(3)">มีเกือบทุกวัน</button>
+                </div>
+            </div>
+
+            <!-- Step 3: Result -->
+            <div id="step-result" class="fade-in" style="display: none;">
+                <h3 class="mb-2" style="color: var(--primary-color);">ผลลัพธ์ของคุณ</h3>
+                <p class="text-muted mb-4">เพื่อนร่วมทางของคุณคือ...</p>
+                
+                <div class="mb-4">
+                    <img src="https://cdn-icons-png.flaticon.com/512/616/616430.png" alt="Cat" id="result-cat-img" style="width: 120px; height: 120px; object-fit: contain;">
+                </div>
+                
+                <h2 class="cat-name mb-3" id="result-cat-name" style="color: #333; font-weight: 700;">น้องแมวสก็อตติช โฟลด์</h2>
+                <p class="cat-desc text-muted px-3" id="result-cat-desc">
+                    คุณเป็นคนใจเย็นและอบอุ่น ช่วงนี้อาจจะต้องการการพักผ่อนที่เงียบสงบเหมือนกับน้องแมวที่ชอบนอนขดตัวกลมๆ
+                </p>
+                
+                <div class="d-flex justify-content-center gap-3 mt-4 flex-wrap">
+                    <a href="Home.html" class="btn-quiz-primary px-4 shadow-sm">
+                        <i class="fas fa-home mr-2"></i>กลับหน้าแรก
+                    </a>
+                    <button onclick="location.reload()" class="btn-quiz-outline px-4">
+                        <i class="fas fa-redo mr-2"></i>ทำอีกครั้ง
+                    </button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="script.js"></script>

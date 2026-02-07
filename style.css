@@ -1,0 +1,347 @@
+@charset "UTF-8";
+
+/* =========================================
+   1. GLOBAL STYLES & VARIABLES
+   ========================================= */
+:root {
+    --primary-color: #5a7883;
+    --bg-color: #f0f4f8;
+    --card-bg: #ffffff;
+    --text-main: #333333;
+    --accent-green: #e8f3ef;
+
+    /* Quiz Specific Colors */
+    --quiz-green: #0A714E;
+    --quiz-btn: #0097B2;
+    --quiz-btn-light: #CCEBEE;
+    --quiz-bg: #F9F7F2; /* Creamy background */
+}
+
+html, body {
+    height: 100%;
+    background-color: var(--bg-color);
+    font-family: 'Kanit', sans-serif;
+    color: var(--text-main);
+    transition: filter 0.3s ease;
+    padding-top: 60px; /* Space for fixed navbar */
+}
+
+/* =========================================
+   2. COLORBLIND MODES (FILTERS)
+   ========================================= */
+#colorblind-filter-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    pointer-events: none; /* คลิกทะลุได้ */
+    z-index: 999999; /* สูงสุดเหนือทุกอย่าง */
+    display: none;
+    transition: all 0.3s ease;
+}
+
+/* Apply SVG Filters based on body class */
+body.mode-protanopia #colorblind-filter-overlay { display: block; filter: url('#protanopia'); backdrop-filter: url('#protanopia'); }
+body.mode-deuteranopia #colorblind-filter-overlay { display: block; filter: url('#deuteranopia'); backdrop-filter: url('#deuteranopia'); }
+body.mode-tritanopia #colorblind-filter-overlay { display: block; filter: url('#tritanopia'); backdrop-filter: url('#tritanopia'); }
+body.mode-achromatopsia #colorblind-filter-overlay { display: block; filter: grayscale(100%); backdrop-filter: grayscale(100%); }
+
+/* =========================================
+   3. NAVBAR
+   ========================================= */
+.custom-navbar {
+    background-color: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(0,0,0,0.05);
+    padding-top: 15px;
+    padding-bottom: 15px;
+    white-space: nowrap;
+    z-index: 1050;
+}
+
+.navbar-brand img {
+    border-radius: 8px;
+}
+
+.nav-link {
+    font-weight: 500;
+    color: #555 !important;
+    margin: 0 10px;
+    transition: all 0.3s;
+}
+
+.nav-link:hover, .nav-item.active .nav-link {
+    color: var(--primary-color) !important;
+    transform: translateY(-1px);
+}
+
+/* =========================================
+   4. LAYOUT & CARDS
+   ========================================= */
+.main-container {
+    margin-top: 20px;
+    padding-bottom: 50px;
+}
+
+.section-card {
+    background: var(--card-bg);
+    border-radius: 24px;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.01);
+    border: none;
+    overflow: hidden;
+    margin-bottom: 24px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.section-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+.card-header-custom {
+    padding: 20px 25px 5px;
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--primary-color);
+    text-align: center;
+}
+
+/* =========================================
+   5. CAROUSEL (HERO SECTION)
+   ========================================= */
+.hero-section {
+    border-radius: 24px;
+    overflow: hidden;
+    box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+    margin-bottom: 30px;
+}
+
+.carousel-item img {
+    height: 350px;
+    object-fit: cover;
+    filter: brightness(0.9);
+}
+
+.carousel-caption {
+    background: rgba(255,255,255,0.85);
+    backdrop-filter: blur(5px);
+    border-radius: 16px;
+    padding: 20px;
+    color: #333 !important;
+    bottom: 30px;
+    left: 10%;
+    right: 10%;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+/* =========================================
+   6. MOOD TRACKER & SLIDER
+   ========================================= */
+.mood-container { padding: 20px; }
+
+.mood-icons-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 25px;
+    padding: 0 10px;
+}
+
+.mood-item {
+    cursor: pointer;
+    opacity: 0.4;
+    transition: all 0.3s;
+    text-align: center;
+}
+
+.mood-item.active {
+    opacity: 1;
+    transform: scale(1.2) translateY(-10px);
+}
+
+.mood-icon-circle {
+    width: 50px; height: 50px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.5rem; color: white;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    margin: 0 auto 8px;
+}
+
+/* Slider Customization */
+.slider-wrapper {
+    position: relative;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    padding: 0 10px;
+}
+
+.slider-track-bg {
+    position: absolute; width: 100%; height: 12px; border-radius: 10px;
+    background: linear-gradient(90deg, #6c757d 0%, #28a745 25%, #ffc107 50%, #fd7e14 75%, #dc3545 100%);
+    z-index: 1; opacity: 0.8;
+}
+
+.custom-range-slider {
+    -webkit-appearance: none; width: 100%; background: transparent; position: absolute;
+    appearance: none; z-index: 5; cursor: pointer;
+}
+
+.custom-range-slider::-webkit-slider-thumb {
+    -webkit-appearance: none; width: 32px; height: 32px; border-radius: 50%;
+    background: #ffffff; border: 4px solid #555;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.3); margin-top: -10px;
+    transition: border-color 0.2s;
+}
+
+.custom-range-slider::-webkit-slider-runnable-track {
+    width: 100%; height: 12px; cursor: pointer; background: transparent;
+}
+
+/* Result Box */
+.result-box {
+    background-color: #f8f9fa; border-radius: 16px; padding: 20px;
+    text-align: center; margin-top: 20px; border: 1px solid #eee;
+}
+
+/* =========================================
+   7. MAP SECTION
+   ========================================= */
+.map-wrapper {
+    position: relative; border-radius: 16px; overflow: hidden; height: 350px;
+}
+
+#hospital-map { height: 100%; width: 100%; }
+
+.btn-map-float {
+    position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); z-index: 400;
+    background: white; border: none; padding: 10px 25px; border-radius: 30px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2); font-weight: 600; color: #333;
+    display: flex; align-items: center; transition: all 0.2s;
+}
+
+.btn-map-float:hover {
+    transform: translateX(-50%) translateY(-3px);
+    background: var(--primary-color); color: white;
+}
+.btn-map-float svg path { fill: #dc3545; transition: fill 0.2s;}
+.btn-map-float:hover svg path { fill: white; }
+
+/* =========================================
+   8. SIDEBAR & FOOTER
+   ========================================= */
+.budget-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+.sub-box {
+    background-color: var(--accent-green); border-radius: 16px; padding: 15px; text-align: center;
+    display: flex; flex-direction: column; justify-content: center; height: 100%;
+}
+.sub-box small { color: #666; font-size: 0.8rem; }
+.sub-box p { font-weight: bold; font-size: 1rem; color: #333; margin: 0;}
+
+.doc-list ul { padding-left: 20px; margin-bottom: 0; }
+.doc-list li { margin-bottom: 8px; font-size: 0.9rem; color: #555; }
+.doc-list i { color: var(--primary-color); }
+
+.footer { background-color: white; padding: 2rem 0; margin-top: 3rem; border-top: 1px solid #eee; }
+
+.fade-in { animation: fadeIn 0.5s ease-out; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+/* =========================================
+   9. QUIZ OVERLAY & INTERFACE
+   ========================================= */
+#quiz-overlay {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background-color: var(--quiz-bg);
+    z-index: 9999; /* สูงมาก แต่ต่ำกว่า Colorblind Filter */
+    display: flex; justify-content: center; align-items: center;
+    overflow-y: auto;
+}
+
+.quiz-container {
+    width: 90%; max-width: 800px;
+    background: white;
+    border-radius: 30px;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.1);
+    padding: 40px;
+    position: relative;
+    text-align: center;
+    min-height: 500px;
+    display: flex; flex-direction: column; justify-content: center; align-items: center;
+}
+
+/* Phase 1: Intro / Color Selection */
+.color-mode-btn {
+    display: block; width: 100%; max-width: 300px; margin: 10px auto;
+    padding: 15px; border: 2px solid #ddd; border-radius: 15px;
+    background: white; font-weight: 600; font-size: 1.1rem;
+    transition: all 0.2s;
+}
+.color-mode-btn:hover {
+    border-color: var(--quiz-btn); color: var(--quiz-btn); transform: translateY(-2px);
+}
+
+/* Common Quiz Elements */
+.quiz-title { color: var(--quiz-green); font-weight: bold; font-size: 2rem; margin-bottom: 10px; }
+.quiz-subtitle { color: #000; font-size: 1.1rem; margin-bottom: 30px; }
+
+.btn-quiz-primary {
+    background-color: var(--quiz-btn); color: white;
+    padding: 12px 40px; border-radius: 50px; font-size: 1.2rem; border: none;
+    box-shadow: 0 4px 10px rgba(0,151,178,0.3); transition: all 0.2s;
+}
+.btn-quiz-primary:hover {
+    background-color: #007a91; transform: translateY(-2px); color: white; text-decoration: none;
+}
+
+/* Phase 2: Questions */
+.progress-container { width: 100%; max-width: 400px; margin: 0 auto 30px; }
+.progress-bar-custom { height: 6px; background: #ddd; border-radius: 3px; overflow: hidden; }
+.progress-fill { height: 100%; background: var(--quiz-btn); width: 0%; transition: width 0.3s; }
+
+.quiz-question-text { font-size: 1.5rem; font-weight: 500; color: #333; margin-bottom: 40px; }
+
+.quiz-options-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 20px; width: 100%; max-width: 600px;
+}
+.quiz-option-btn {
+    background: white; border: 2px solid #eee; border-radius: 50px;
+    padding: 15px; font-size: 1rem; color: #333; transition: all 0.2s;
+}
+.quiz-option-btn:hover, .quiz-option-btn.selected {
+    border-color: var(--quiz-btn); background-color: var(--quiz-btn-light); color: var(--quiz-btn);
+}
+
+/* Phase 3: Result */
+.cat-result-img { width: 200px; height: auto; margin-bottom: 20px; }
+.cat-name { color: var(--quiz-green); font-size: 1.8rem; font-weight: bold; }
+.cat-desc { color: #1CABB0; font-size: 1.1rem; margin-bottom: 30px; }
+
+/* =========================================
+   10. CAT COMPANION (FLOATING)
+   ========================================= */
+#cat-companion {
+    position: fixed; bottom: 20px; right: 20px;
+    z-index: 1020; /* Below Navbar but above content */
+    display: none; /* Hidden initially, shown by JS */
+    flex-direction: column; align-items: flex-end;
+}
+
+.cat-bubble {
+    background: white; padding: 15px 20px; border-radius: 20px 20px 0 20px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1); margin-bottom: 10px;
+    max-width: 250px; font-size: 0.95rem; color: #333; position: relative;
+    animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.cat-avatar {
+    width: 150px; cursor: pointer; transition: transform 0.2s;
+}
+.cat-avatar:hover { transform: scale(1.1) rotate(5deg); }
+
+@keyframes popIn {
+    from { opacity: 0; transform: scale(0.5) translateY(20px); }
+    to { opacity: 1; transform: scale(1) translateY(0); }
+}
